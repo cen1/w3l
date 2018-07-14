@@ -94,46 +94,71 @@ int apply_patch(char *ptr, t_patch *patch) {
 	return SUCCESS;
 }
 
-/* search buffer of size scan_len for sig */
-int find_sig(char *base, t_sig *sig, int scan_len) {
-	int i, j, found = 0;
 
-	for(i = 0; i < scan_len; i++) {
+/* search buffer of size scan_len for sig */
+int find_sig(char *base, t_sig *sig, int scan_len, ...) {
+	int i, j, found, num_args = 0;
+	// getting the optional 'offset' argumnt
+	va_list optional_params;
+	va_start(optional_params, num_args);
+	int offset = num_args > 0 ? va_arg(optional_params, int) : 0;
+
+	for (i = offset; i < scan_len; i++) {
 		found = 1;
-		for(j = 0; j < sig->length; j++) {
-			if(((base[i + j]) & (sig->data[j*2])) != (sig->data[j*2 + 1])) {
+		for (j = 0; j < sig->length; j++) {
+			if (((base[i + j]) & (sig->data[j * 2])) != (sig->data[j * 2 + 1])) {
 				found = 0;
 				break;
 			}
 		}
-		if(found)
+		if (found)
 			return i + sig->delta;
 	}
 
+	va_end(optional_params);
 	return -1;
 }
+
 
 /* apply a NULL terminated array of sig/patch pairs */
 int apply_patches(char *base, void *patches[], int scan_len) {
 	int i = 0, patch_loc;
-    int ret = SUCCESS; // return value
+	int ret = SUCCESS; // return value
 	t_sig *cur_sig;
 	t_patch *cur_patch;
-	while(patches[i] != NULL) {
+	while (patches[i] != NULL) {
+		int sig_offset = 0;
 		cur_sig = (t_sig *)(patches[i]);
 		cur_patch = (t_patch *)(patches[i + 1]);
 		debug("Searching for sig (%s), length 0x%x: ", cur_sig->name, cur_sig->length);
-		patch_loc = find_sig(base, cur_sig, scan_len);
-		if(patch_loc == -1) {
+
+		BOOL is_patched = FALSE;
+		// We will find all the signatures if need, so let`s use while(1)
+		while (1) {
+			// find next signature
+			patch_loc = find_sig(base, cur_sig, scan_len, sig_offset);
+			if (patch_loc == -1) {
+				break;
+			}
+			// patch it
+			debug("found at 0x%08x\r\n", base + patch_loc);
+			if (apply_patch(base + patch_loc, cur_patch) == ERR_MEM_WRITE) {
+				ret = ERR_MEM_WRITE;
+			}
+			else {
+				is_patched = TRUE;
+			}
+			// increase the offset, so it will point to the end of current signature
+			sig_offset = patch_loc + cur_sig->length - cur_sig->delta;
+			if (!cur_patch->all_occurences) break; // standart behaviour - only one occurence
+		}
+		if (!is_patched) {
 			debug("not found.\r\n");
 			ret = ERR_SIG_NOT_FOUND;
-            i+=2;
-            continue;
+			i += 2;
+			continue;
 		}
-		debug("found at 0x%08x\r\n", base + patch_loc);
-		if(apply_patch(base + patch_loc, cur_patch) == ERR_MEM_WRITE)
-			ret= ERR_MEM_WRITE;
-		i+=2;
+		i += 2;
 	}
 
 	return ret;

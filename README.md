@@ -1,5 +1,20 @@
-w3l - Warcraft III RoC/TFT 1.22a+ PvPGN loader (source code)
+# w3l - Warcraft III RoC/TFT 1.22a+ PvPGN loader (source code)
 
+# Fork description
+- added CMake/Conan support
+- C++ compile target
+- map size limit removal
+- integration with eurobattle REST API to show player DotA stats in lobby (overriding race, penalty UI fields))
+- true widescreen support
+- remove lg screen timeout limit
+
+```
+conan install . -if ./build_release -s compiler.version=16 -s arch=x86 -s build_type=Release -o *:shared=True --build=missing
+cmake -G "Visual Studio 16 2019" -B./build_release -DCMAKE_CONFIGURATION_TYPES=Release -A Win32
+```
+
+
+# OLD readme
 This software patches Warcraft III to enable connections to PvPGN servers.  It was written in part by:
   * phatdeeva (w3lh)
   * Rupan (w3l, w3lh)

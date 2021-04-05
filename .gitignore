@@ -234,3 +234,11 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Other
+*.db
+/build_release
+/build_debug
+/bin
+/Release
+/Debug

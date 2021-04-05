@@ -6,7 +6,7 @@
 - map size limit removal
 - integration with eurobattle REST API to show player DotA stats in lobby (overriding race, penalty UI fields))
 - true widescreen support
-- remove lg screen timeout limit
+- remove lag screen timeout limit
 
 ```
 conan install . -if ./build_release -s compiler.version=16 -s arch=x86 -s build_type=Release -o *:shared=True --build=missing

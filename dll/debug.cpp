@@ -2,7 +2,7 @@
 #include <windows.h>
 
 void debug(char *message, ...) {
-#ifdef DEBUG
+#ifdef _DEBUG
 	DWORD temp;
 	HANDLE file;
 	va_list args;

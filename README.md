@@ -8,11 +8,16 @@
 - true widescreen support
 - remove lag screen timeout limit
 
+Release build:
 ```
 conan install . -if ./build_release -s compiler.version=16 -s arch=x86 -s build_type=Release -o *:shared=True --build=missing
 cmake -G "Visual Studio 16 2019" -B./build_release -DCMAKE_CONFIGURATION_TYPES=Release -A Win32
 ```
-
+Debug build:
+```
+conan install . -if ./build_debug -s compiler.version=16 -s arch=x86 -s build_type=Debug -o *:shared=True --build=missing
+cmake -G "Visual Studio 16 2019" -B./build_debug -DCMAKE_CONFIGURATION_TYPES=Debug -A Win32
+```
 
 # OLD readme
 This software patches Warcraft III to enable connections to PvPGN servers.  It was written in part by:

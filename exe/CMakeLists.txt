@@ -1,6 +1,6 @@
 project(w3l)
 
-add_executable(w3l)
+add_executable(w3l resource.rc)
 
 target_sources(w3l PRIVATE 
     nodefaultlib.cpp
@@ -9,9 +9,7 @@ target_sources(w3l PRIVATE
     resource.h 
     w3l.cpp)
 
-if(MSVC)
-    set_target_properties(w3l PROPERTIES VS_GLOBAL_ApplicationIcon "${CMAKE_CURRENT_SOURCE_DIR}/Red1_.ico")
-    
+if(MSVC)    
     target_compile_definitions(w3l PRIVATE 
         -DUNICODE 
         -D_UNICODE 
@@ -19,21 +17,21 @@ if(MSVC)
         -D_WINDOWS
         -DUNICODE
         -D_UNICODE)
-    
-    target_compile_options(w3l PRIVATE /Zi /W3 /O1 /Oy /Os /GS- /Gy)
+
+    set_target_properties(w3l PROPERTIES LINK_FLAGS "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
     
     target_link_options(w3l PRIVATE 
         "/INCREMENTAL:NO" 
-        #"/NODEFAULTLIB"
-        "/MANIFESTUAC:\"/level='requireAdministrator' /uiAccess='false'\"" 
+        "/level='requireAdministrator' /uiAccess='false'" 
         "/SUBSYSTEM:WINDOWS" 
         "/OPT:REF" 
-        "/OPT:ICF" 
+        "/OPT:ICF"
+        "/NODEFAULTLIB"
         "/DYNAMICBASE:NO" 
         "/NXCOMPAT:NO" 
         "/MACHINE:X86" 
-        "/SAFESEH:NO")
-        #"/BASE:\"0x7E540000\"")
+        "/SAFESEH:NO"
+        "/BASE:0x7E540000")
     
     target_link_libraries(w3l PRIVATE 
         kernel32.lib 
@@ -48,4 +46,11 @@ if(MSVC)
         uuid.lib 
         odbc32.lib 
         odbccp32.lib)
+
+    set(W3L_DEBUG_OPTIONS /ZI /Od /W3 /Oy /Os /GS- /Gy)
+    set(W3L_RELEASE_OPTIONS /Zi /O1 /W3 /Oy /Os /GS- /Gy)    
+    target_compile_options(w3l PRIVATE "$<$<CONFIG:DEBUG>:${W3L_DEBUG_OPTIONS}>")
+    target_compile_options(w3l PRIVATE "$<$<CONFIG:RELEASE>:${W3L_RELEASE_OPTIONS}>")
+
+    string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()

@@ -13,7 +13,7 @@ target_sources(wl27 PUBLIC
     pstdint.h
     resource.h
     w3lh.cpp
-    w3lh.h)
+    w3lh.h)  
 
 if(MSVC)
 
@@ -25,23 +25,23 @@ if(MSVC)
         -DUNICODE
         -D_UNICODE)
 
-        target_link_options(w3lh PRIVATE
+        set_target_properties(wl27 PROPERTIES LINK_FLAGS "/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\"")
+
+        target_link_options(wl27 PRIVATE
         "/MANIFEST"
         "/LTCG:incremental"
         "/NXCOMPAT:NO"
         "/DYNAMICBASE:NO" 
-        "/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\""
         "/SUBSYSTEM:WINDOWS" 
         "/MACHINE:X86" 
         "/SAFESEH"
         "/ERRORREPORT:PROMPT"
         "/NOLOGO"
         "/INCREMENTAL:NO"
-        #"/NODEFAULTLIB"
         "/TLBID:1"
         "/OPT:ICF"
-        "/DLL")
-        #"/BASE:\"0x76290000\"")
+        "/DLL"
+        "/BASE:0x76290000")
 
     target_link_libraries(wl27 PRIVATE 
         Shlwapi.lib
@@ -57,5 +57,23 @@ if(MSVC)
         uuid.lib
         odbc32.lib
         odbccp32.lib)
+
+        set(WL27_DEBUG_OPTIONS /ZI /Od /W3 /Oy /Os /GS- /Gy /Gm /RTC1)
+        set(WL27_RELEASE_OPTIONS /Zi /O2 /W3 /Oy /Os /GS- /Gy)
+        target_compile_options(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_OPTIONS}>")
+        target_compile_options(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_OPTIONS}>")
+    
+        set(WL27_RELEASE_L_OPTIONS 
+            "/INCREMENTAL:NO"
+            "/DYNAMICBASE:NO"
+            "/OPT:REF"
+            "/OPT:ICF")
+        target_link_options(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_L_OPTIONS}>")
+        target_link_options(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_L_OPTIONS}>")
+    
+        set(WL27_DEBUG_LIB ucrtd.lib vcruntimed.lib)
+        set(WL27_RELEASE_LIB ucrt.lib)
+        target_link_libraries(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_LIB}>")    
+        target_link_libraries(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_LIB}>")    
 
 endif()    

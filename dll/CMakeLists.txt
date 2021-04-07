@@ -58,12 +58,11 @@ if(MSVC)
         -DUNICODE
         -D_UNICODE)
 
+    set_target_properties(w3lh PROPERTIES LINK_FLAGS "/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\"")
+
     target_link_options(w3lh PRIVATE
         "/MANIFEST"
-        "/LTCG"
-        "/NXCOMPAT"
-        "/DYNAMICBASE:NO" 
-        "/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\""
+        "/NXCOMPAT:NO"
         "/SUBSYSTEM:WINDOWS" 
         "/MACHINE:X86" 
         "/SAFESEH:NO"
@@ -71,9 +70,7 @@ if(MSVC)
         "/NOLOGO"
         "/TLBID:1" 
         "/DLL"
-        "/OPT:REF"
-        "/OPT:ICF")
-        #"/BASE:0x76290000")
+        "/BASE:0x76290000")
 
     target_link_libraries(w3lh PRIVATE 
         kernel32.lib
@@ -87,7 +84,22 @@ if(MSVC)
         oleaut32.lib
         uuid.lib
         odbc32.lib
-        odbccp32.lib
-        ucrt.lib)
+        odbccp32.lib)
+
+    set(W3LH_DEBUG_OPTIONS /ZI /Od /W3 /Oy /Os /GS- /Gy /Gm /RTC1)
+    set(W3LH_RELEASE_OPTIONS /Zi /O2 /W3 /Oy /Os /GS- /Gy)
+    target_compile_options(w3lh PRIVATE "$<$<CONFIG:DEBUG>:${W3LH_DEBUG_OPTIONS}>")
+    target_compile_options(w3lh PRIVATE "$<$<CONFIG:RELEASE>:${W3LH_RELEASE_OPTIONS}>")
+
+    set(W3LH_RELEASE_L_OPTIONS 
+        "/INCREMENTAL:NO"
+        "/DYNAMICBASE:NO"
+        "/OPT:REF"
+        "/OPT:ICF")
+    target_link_options(w3lh PRIVATE "$<$<CONFIG:DEBUG>:${W3LH_DEBUG_L_OPTIONS}>")
+    target_link_options(w3lh PRIVATE "$<$<CONFIG:RELEASE>:${W3LH_RELEASE_L_OPTIONS}>")
+
+    set(W3LH_RELEASE_LIB ucrt.lib)
+    target_link_libraries(w3lh PRIVATE "$<$<CONFIG:RELEASE>:${W3LH_RELEASE_LIB}>")
 
 endif()

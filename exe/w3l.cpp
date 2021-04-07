@@ -235,6 +235,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		MessageBoxA(0, buf, "Patch Error", MB_OK);
 		ExitProcess(3);
 	}
+
 	/* Trying to patch exe for /NXCOMPAT:NO */
 	if (baseAddr == 0xFFFFFFFF) {
 		rval = InjectByte(processinfo, DEP_PATCH_0, DEPPatchOrig[0], DEPPatchNew[0]);
@@ -247,13 +248,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (rval) {
 					debug("NXCOMPAT @ 0x%08X patching failed\r\n", DEP_PATCH_2);
 					rval = InjectByte(processinfo, DEP_PATCH_3, DEPPatchOrig[2], DEPPatchNew[2]);
-					if (rval) debug("NXCOMPAT @ 0x%08X patching failed\r\n", DEP_PATCH_3);
+					if (rval) {
+						debug("NXCOMPAT @ 0x%08X patching failed\r\n", DEP_PATCH_3);
+					}
 				}
 			}
 		}
 	}
-	else
+	else {
 		rval = InjectByte(processinfo, (LPCVOID)(baseAddr + BASE_DEP_PATCH_0), DEPPatchOrig[0], DEPPatchNew[0]);
+	}
+
 	if (rval) {
 		debug("NXCOMPAT @ 0x%08X patching failed\r\n", baseAddr + BASE_DEP_PATCH_0);
 		rval = InjectByte(processinfo, (LPCVOID)(baseAddr + BASE_DEP_PATCH_1), DEPPatchOrig[0], DEPPatchNew[0]);
@@ -263,15 +268,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (rval) {
 				debug("NXCOMPAT @ 0x%08X patching failed\r\n", baseAddr + BASE_DEP_PATCH_2);
 				rval = InjectByte(processinfo, (LPCVOID)(baseAddr + BASE_DEP_PATCH_3), DEPPatchOrig[2], DEPPatchNew[2]);
-				if (rval) debug("NXCOMPAT @ 0x%08X patching failed\r\n", baseAddr + BASE_DEP_PATCH_3);
+				if (rval) {
+					debug("NXCOMPAT @ 0x%08X patching failed\r\n", baseAddr + BASE_DEP_PATCH_3);
+				}
 			}
 		}
 	}
+	if (rval) {
+		debug("Faile to patch NXCOMPAT");
+	}
+	else {
+		debug("Successfully patched NXCOMPAT");
+	}
+
 	ResumeThread(processinfo.hThread);
 	ExitProcess(0);
 }
 
-/* write to process memory at offset */
+/* Write to process memory at offset */
 int InjectDll(PROCESS_INFORMATION processinfo, LPCVOID offset, LPCVOID helper) {
 	char buf[GAME_DLL_NAME_LEN];
 	SIZE_T numread = 0, numwritten = 0;
@@ -426,7 +440,13 @@ HMODULE sm_LoadNTDLLFunctions()
 	return hNtDll;
 }
 
-/* write to process memory at offset */
+/** Write to process memory at offset. Returns 0 on success.
+ * 
+ * @processinfo process info
+ * @offset offset from base address
+ * @byteOrig
+ * @byteSet byte to write
+ */
 int InjectByte(PROCESS_INFORMATION processinfo, LPCVOID offset, char byteOrig, char byteSet) {
 	char buf[1];
 	SIZE_T numread = 0, numwritten = 0;
@@ -449,6 +469,10 @@ int InjectByte(PROCESS_INFORMATION processinfo, LPCVOID offset, char byteOrig, c
 	}
 	return 0;
 }
+
+/**
+ * Print messages to debug log.
+ */
 void debug(char *message, ...) {
 #ifdef _DEBUG
 	DWORD temp;

@@ -275,10 +275,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 	if (rval) {
-		debug("Faile to patch NXCOMPAT");
+		debug("Failed to patch NXCOMPAT\r\n");
 	}
 	else {
-		debug("Successfully patched NXCOMPAT");
+		debug("Successfully patched NXCOMPAT\r\n");
 	}
 
 	ResumeThread(processinfo.hThread);

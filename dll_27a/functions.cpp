@@ -42,6 +42,7 @@ DLLEXPORT void w3l_do_hash(char *username, bnet_hash_ctx *ctx) {
 	char        *password;
 
 	password = (char *)(ctx + 1);
+	//hash_set_16(tmp, password, strlen(password)); compile error in c++
 	hash_set_16((uint32_t*)tmp, (const unsigned char*)password, strlen(password));
 
 	for (i = 0; i < 64; i++)

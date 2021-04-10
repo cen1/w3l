@@ -14,15 +14,12 @@ if(MSVC)
         -DUNICODE 
         -D_UNICODE 
         -DWIN32 
-        -D_WINDOWS
-        -DUNICODE
-        -D_UNICODE)
+        -D_WINDOWS)
 
     set_target_properties(w3l PROPERTIES LINK_FLAGS "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
     
     target_link_options(w3l PRIVATE 
         "/INCREMENTAL:NO" 
-        "/level='requireAdministrator' /uiAccess='false'" 
         "/SUBSYSTEM:WINDOWS" 
         "/OPT:REF" 
         "/OPT:ICF"

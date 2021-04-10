@@ -63,6 +63,7 @@ if(MSVC)
     target_link_options(w3lh PRIVATE
         "/MANIFEST"
         "/NXCOMPAT:NO"
+        #"/NODEFAULTLIB"
         "/SUBSYSTEM:WINDOWS" 
         "/MACHINE:X86" 
         "/SAFESEH:NO"
@@ -102,4 +103,5 @@ if(MSVC)
     set(W3LH_RELEASE_LIB ucrt.lib)
     target_link_libraries(w3lh PRIVATE "$<$<CONFIG:RELEASE>:${W3LH_RELEASE_LIB}>")
 
+    string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()

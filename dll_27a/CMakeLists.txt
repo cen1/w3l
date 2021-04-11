@@ -5,14 +5,14 @@ add_library(wl27 SHARED)
 target_sources(wl27 PUBLIC
     dep.cpp
     dep.h
-    functions.c
+    functions.cpp
     functions.h
-    nodefaultlib.c
+    nodefaultlib.cpp
     nodefaultlib.h
     patches.h
     pstdint.h
     resource.h
-    w3lh.c
+    w3lh.cpp
     w3lh.h
 )
 
@@ -66,7 +66,7 @@ if(MSVC)
         odbccp32.lib
     )
 
-    set(WL27_DEBUG_OPTIONS /GS- /TC /GL /analyze- /W3 /Gy /Zc:wchar_t /Zi /Gm- /O2 /Zc:inline /fp:precise 
+    set(WL27_DEBUG_OPTIONS /GS- /GL /analyze- /W3 /Gy /Zc:wchar_t /Zi /Gm- /O2 /Zc:inline /fp:precise 
                            /errorReport:prompt /WX- /Zc:forScope /Gd /Oy- /Oi /MT /nologo)
     set(WL27_RELEASE_OPTIONS /Zi /O2 /W3 /Oy /Os /GS- /Gy)
     target_compile_options(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_OPTIONS}>")

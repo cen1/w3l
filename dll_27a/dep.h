@@ -33,9 +33,12 @@ enum DepEnforcement {
 // Once enabled, it cannot be disabled.
  #ifdef __cplusplus
  extern "C" {
- #endif 
+ #endif
+
 BOOL SetCurrentProcessDEP(enum DepEnforcement enforcement);
+
  #ifdef __cplusplus
  }
- #endif 
+ #endif
+
 #endif  // DEP_H__

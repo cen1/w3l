@@ -2,6 +2,11 @@
 
 #include "functions.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /*
 Password hashing functions here are adapted from bnethash.cpp (part of pvpgn):
 https://svn.berlios.de/wsvn/pvpgn/trunk/pvpgn/src/common/bnethash.cpp?rev=257&sc=0
@@ -42,7 +47,8 @@ DLLEXPORT void w3l_do_hash(char *username, bnet_hash_ctx *ctx) {
 	char        *password;
 
 	password = (char *)(ctx + 1);
-	hash_set_16(tmp, password, strlen(password));
+	//hash_set_16(tmp, password, strlen(password));
+	hash_set_16((uint32_t*)tmp, (const unsigned char*)password, strlen(password));
 
 	for (i = 0; i < 64; i++)
 		tmp[i + 16] = ROTL32(1, tmp[i] ^ tmp[i + 8] ^ tmp[i + 2] ^ tmp[i + 13]);
@@ -173,5 +179,9 @@ DLLEXPORT __declspec(naked) int w3l_create_account3()
 			retn
 	}
 }
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif

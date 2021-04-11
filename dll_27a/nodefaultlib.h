@@ -7,6 +7,15 @@
 #include <Shlwapi.h>
 #pragma intrinsic(strlen)
 #pragma function(memset, memcmp)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int __cdecl memcmp(void const* _Buf1, void const* _Buf2, size_t _Size);
 void * __cdecl memset(void *pTarget, int value, size_t cbTarget);
 void __cdecl debug(char *, ...);
+
+#ifdef __cplusplus
+}
+#endif 

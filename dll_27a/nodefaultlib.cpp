@@ -1,6 +1,10 @@
 #include "nodefaultlib.h"
 #define DEBUG_FILE L"debug.log"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void * __cdecl memset(void *pTarget, int value, size_t cbTarget)
 {
 	unsigned char *p = (unsigned char *)(pTarget);
@@ -43,3 +47,7 @@ void debug(char *message, ...) {
 	CloseHandle(file);
 #endif
 }
+
+#ifdef __cplusplus
+ }
+#endif

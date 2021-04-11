@@ -21,24 +21,6 @@
 #include <windows.h>
 #include <stdio.h>
 
-void debug(char *message, ...) {
-#ifdef DEBUG
-	DWORD temp;
-	HANDLE file;
-	va_list args;
-	char buf[1024];
-
-	memset(buf, 0, sizeof(buf));
-	va_start(args, message);
-	wvsprintfA(buf, message, args);
-
-	file = CreateFile((LPCWSTR)DEBUG_FILE, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	SetFilePointer(file, 0, 0, FILE_END);
-	WriteFile(file, buf, (DWORD)strlen(buf), &temp, NULL);
-	CloseHandle(file);
-#endif
-}
-
 namespace {  
   
 // These values are in the Windows 2008 SDK but not in the previous ones. Define  
@@ -74,7 +56,10 @@ typedef HRESULT (WINAPI *FnNtSetInformationProcess)(
   
 }  // namespace  
   
-extern "C"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 BOOL SetCurrentProcessDEP(enum DepEnforcement enforcement) {  
   // Try documented ways first.  
   // Only available on Vista SP1 and Windows 2008.  
@@ -145,3 +130,6 @@ BOOL SetCurrentProcessDEP(enum DepEnforcement enforcement) {
   return SUCCEEDED(status);  
 }  
 
+#ifdef __cplusplus
+}
+#endif

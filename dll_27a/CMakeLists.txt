@@ -14,28 +14,22 @@ target_sources(wl27 PUBLIC
     resource.h
     w3lh.c
     w3lh.h
-    w3lh.def
-    w3lh.rc
 )
 
 set_source_files_properties(dep.c PROPERTIES COMPILE_OPTIONS "/TP")
-
-set(RESOURCE_FILES w3lh.def w3lh.rc)
-set_target_properties(wl27 PROPERTIES RESOURCE "${RESOURCE_FILES}")
 
 if(MSVC)
 
     target_compile_definitions(wl27 PRIVATE 
         -DWIN32
-        -D_DEBUG;
         -D_WINDOWS;
         -D_USRDLL
         -DDLL_EXPORTS
-        -DDEBUG
         -D_UNICODE
         -DUNICODE
         -D_WINDLL
         -D_USING_V110_SDK71_
+        "$<$<CONFIG:DEBUG>:DEBUG>"
     )
 
     set_target_properties(wl27 PROPERTIES LINK_FLAGS "/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /SUBSYSTEM:WINDOWS\",5.01\"")
@@ -46,7 +40,6 @@ if(MSVC)
         "/NXCOMPAT:NO"
         "/NODEFAULTLIB"
         "/DYNAMICBASE:NO" 
-        #"/SUBSYSTEM:WINDOWS" 
         "/MACHINE:X86" 
         "/SAFESEH"
         "/ERRORREPORT:PROMPT"
@@ -87,14 +80,13 @@ if(MSVC)
         "/OPT:REF"
         "/OPT:ICF"
     )
-    #target_link_options(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_L_OPTIONS}>")
     target_link_options(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_L_OPTIONS}>")
 
-    #set(WL27_DEBUG_LIB ucrtd.lib vcruntimed.lib)
     set(WL27_RELEASE_LIB ucrt.lib)
-    #target_link_libraries(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_LIB}>")    
     target_link_libraries(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_LIB}>")    
 
     string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 endif()    

@@ -1,3 +1,0 @@
-LIBRARY "wl27.dll"
-EXPORTS
-GameMain

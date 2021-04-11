@@ -1,4 +1,3 @@
-LIBRARY "w3lh.dll"
+LIBRARY "wl27.dll"
 EXPORTS
 GameMain
-star_do_hash

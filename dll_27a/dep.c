@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 void debug(char *message, ...) {
-#ifdef _DEBUG
+#ifdef DEBUG
 	DWORD temp;
 	HANDLE file;
 	va_list args;

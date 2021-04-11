@@ -47,8 +47,8 @@
 
 #define DEFAULT_LATENCY 0x64
 
-#define GAME_DLL_LOAD_ERROR "Could not open "
-#define GAME_MAIN_ERROR "Could not locate procedure "
+#define GAME_DLL_LOAD_ERROR "Could not open " ## GAME_DLL_NAME
+#define GAME_MAIN_ERROR "Could not locate procedure " ## GAME_MAIN
 #define SIG_NOT_FOUND_ERROR "Could not find location to patch."
 #define MEMORY_WRITE_ERROR "Could not write to process memory."
 
@@ -64,13 +64,12 @@ char read_latency ( ) {
     HFILE file;
 	OFSTRUCT ofFile;
 	char buf[4];
-	int lt;
-	LPDWORD readNum = 0;
+    int lt, readNum;
     file = OpenFile ( LATENCY_FILE, &ofFile, OF_READ);
     if ( file == HFILE_ERROR )
         return DEFAULT_LATENCY;
-    ReadFile((HANDLE) file, buf, 3, readNum, NULL );
-    CloseHandle((HANDLE) file );
+    ReadFile( file, buf, 3, &readNum, NULL );
+    CloseHandle( file );
 	buf[3] = '\0';
 	lt = StrToInt( buf );
     if ( lt > 255 || lt < 30)
@@ -213,7 +212,7 @@ int patch_game(char *base) {
 	rel_call_addr = (int)w3l_lph_checked_rev - lph_checked_loc - 4 - (int)base;
 	debug("Setting LPH_checked call addr at 0x%08x to 0x%08x\r\n", lph_checked_loc + base, rel_call_addr);
 	addr_fix.length = 4;
-	addr_fix.data = (char*)&rel_call_addr; //&(char*)rel_call_addr compile error in c++
+	addr_fix.data = &(char *)rel_call_addr;
 	addr_fix.name = "LPH_checked call1 address";
 	if (apply_patch(base + lph_checked_loc, &addr_fix) == ERR_MEM_WRITE)
 		return ERR_MEM_WRITE;
@@ -228,7 +227,7 @@ int patch_game(char *base) {
 	rel_call_addr = (int)w3l_lph_checked_rev - lph_checked_loc - 4 - (int)base;
 	debug("Setting LPH_checked call addr at 0x%08x to 0x%08x\r\n", lph_checked_loc + base, rel_call_addr);
 	addr_fix.length = 4;
-	addr_fix.data = (char*)&rel_call_addr; //&(char*)rel_call_addr compile error in c++
+	addr_fix.data = &(char *)rel_call_addr;
 	addr_fix.name = "LPH_checked call2 address";
 	if (apply_patch(base + lph_checked_loc, &addr_fix) == ERR_MEM_WRITE)
 		return ERR_MEM_WRITE;
@@ -283,7 +282,7 @@ int patch() {
     apply_patches((char *)game_dll_base, unimportant_patches, GAME_DLL_SIZE);
 
 	#if ! defined USE_SRP3
-	rval = patch_game((char*)game_dll_base);
+	rval = patch_game((char *)game_dll_base);
 	#else
 	rval = apply_patches((char *)game_dll_base, game_patches_srp3, GAME_DLL_SIZE);
 	#endif

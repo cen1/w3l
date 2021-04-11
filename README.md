@@ -14,9 +14,15 @@ conan install . -if ./build_release -s compiler.version=16 -s arch=x86 -s build_
 cmake -G "Visual Studio 16 2019" -B./build_release -DCMAKE_CONFIGURATION_TYPES=Release -A Win32
 ```
 Debug build:
+VS 2019
 ```
 conan install . -if ./build_debug -s compiler.version=16 -s arch=x86 -s build_type=Debug -o *:shared=True --build=missing
 cmake -G "Visual Studio 16 2019" -B./build_debug -DCMAKE_CONFIGURATION_TYPES=Debug -A Win32
+```
+VS 2015
+```
+conan install . -if ./build_debug -s compiler.version=14 -s arch=x86 -s build_type=Debug -o *:shared=True --build=missing
+cmake -G "Visual Studio 14 2015" -B./build_debug -DCMAKE_CONFIGURATION_TYPES=Debug -A Win32
 ```
 
 # OLD readme

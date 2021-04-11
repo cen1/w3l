@@ -3,7 +3,7 @@ project(wl27)
 add_library(wl27 SHARED)
 
 target_sources(wl27 PUBLIC
-    dep.c
+    dep.cpp
     dep.h
     functions.c
     functions.h
@@ -15,8 +15,6 @@ target_sources(wl27 PUBLIC
     w3lh.c
     w3lh.h
 )
-
-set_source_files_properties(dep.c PROPERTIES COMPILE_OPTIONS "/TP")
 
 if(MSVC)
 

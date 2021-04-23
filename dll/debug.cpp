@@ -1,6 +1,10 @@
 #include "debug.h"
 #include <windows.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void debug(char *message, ...) {
 #ifdef _DEBUG
 	DWORD temp;
@@ -18,3 +22,7 @@ void debug(char *message, ...) {
 	CloseHandle(file);
 #endif
 }
+
+#ifdef __cplusplus
+}
+#endif

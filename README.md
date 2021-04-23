@@ -8,10 +8,18 @@
 - true widescreen support
 - remove lag screen timeout limit
 
+Unfortunately due to conan/cmake restrictions we can't just build a single solution that has both debug and release libs properly linked. We need to build seperate solution for each build type.
+
 Release build:
+VS 2019
 ```
 conan install . -if ./build_release -s compiler.version=16 -s arch=x86 -s build_type=Release -o *:shared=True --build=missing
 cmake -G "Visual Studio 16 2019" -B./build_release -DCMAKE_CONFIGURATION_TYPES=Release -A Win32
+```
+VS 2015
+```
+conan install . -if ./build_release -s compiler.version=14 -s arch=x86 -s build_type=Release -o *:shared=True --build=missing
+cmake -G "Visual Studio 14 2015" -B./build_release -DCMAKE_CONFIGURATION_TYPES=Release -A Win32
 ```
 Debug build:
 VS 2019

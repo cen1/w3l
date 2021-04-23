@@ -21,6 +21,10 @@
 #include <windows.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 namespace {  
   
 // These values are in the Windows 2008 SDK but not in the previous ones. Define  
@@ -127,3 +131,6 @@ BOOL SetCurrentProcessDEP(enum DepEnforcement enforcement) {
   return SUCCEEDED(status);  
 }  
 
+#ifdef __cplusplus
+}
+#endif

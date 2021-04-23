@@ -3,6 +3,9 @@
 #include "structures.h"
 #include "offsets.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 	
 __declspec(dllexport) void __stdcall onGameTerminate(void);
 
@@ -42,3 +45,7 @@ void __declspec(dllexport) __stdcall textFrameInitFont(void *textFrame, const ch
 
 typedef const char*(__fastcall * skinGetPathByName_def)(const char* name, const char* type);
 extern skinGetPathByName_def skinGetPathByName;
+
+#ifdef __cplusplus
+}
+#endif

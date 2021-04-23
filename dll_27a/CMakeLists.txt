@@ -68,21 +68,15 @@ if(MSVC)
 
     set(WL27_DEBUG_OPTIONS /GS- /GL /analyze- /W3 /Gy /Zc:wchar_t /Zi /Gm- /O2 /Zc:inline /fp:precise 
                            /errorReport:prompt /WX- /Zc:forScope /Gd /Oy- /Oi /MT /nologo)
-    set(WL27_RELEASE_OPTIONS /Zi /O2 /W3 /Oy /Os /GS- /Gy)
+    set(WL27_RELEASE_OPTIONS /GS- /TC /analyze- /W3 /Gy /Zc:wchar_t /Gm- /Ox /Zc:inline /fp:precise /errorReport:prompt 
+                             /WX- /Zc:forScope /Gd /Oy /MT /nologo /Os)
     target_compile_options(wl27 PRIVATE "$<$<CONFIG:DEBUG>:${WL27_DEBUG_OPTIONS}>")
     target_compile_options(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_OPTIONS}>")
 
-    set(WL27_RELEASE_L_OPTIONS 
-        "/INCREMENTAL:NO"
-        "/DYNAMICBASE:NO"
-        "/OPT:REF"
-        "/OPT:ICF"
-    )
-    target_link_options(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_L_OPTIONS}>")
+    #set(WL27_RELEASE_LIB ucrt.lib)
+    #target_link_libraries(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_LIB}>")    
 
-    set(WL27_RELEASE_LIB ucrt.lib)
-    target_link_libraries(wl27 PRIVATE "$<$<CONFIG:RELEASE>:${WL27_RELEASE_LIB}>")    
-
+    #Unfortunately there is no other way..
     string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
     string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")

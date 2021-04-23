@@ -3,6 +3,10 @@
 #include <windows.h>
 #include "functions.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
 Password hashing functions here are adapted from bnethash.cpp (part of pvpgn):
 https://svn.berlios.de/wsvn/pvpgn/trunk/pvpgn/src/common/bnethash.cpp?rev=257&sc=0
@@ -157,5 +161,9 @@ DLLEXPORT int __fastcall w3l_lph_checked(int *a1, int *a2, void *a3, void *a4)
   }
   return result;
 }
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif

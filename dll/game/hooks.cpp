@@ -14,6 +14,10 @@
 #include <stdio.h> 
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 LPVOID gameTerminateRestorePtr;
 LPVOID lobbyInitStartRestorePtr;
 LPVOID lobbyGameInfoRestorePtr;
@@ -346,3 +350,7 @@ int enhancement_patch(char *game_dll_base) {
 	//*(int*)&minimapSignalRestorePtr = (int)game_dll_base + minimapSignalRestoreOffset;
 	//*(int*)&minimapSignalEndPtr = (int)game_dll_base + minimapSignalEndOffset;
 }
+
+#ifdef __cplusplus
+}
+#endif 

@@ -16,6 +16,10 @@
 #include "PlayerInfo/LagabuseDotaPlayerInfo.h"
 #include "PlayerInfoUpdater.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 std::atomic<bool> is_in_lobby{ false };
 
 LobbyInfo * lobby_info;
@@ -141,3 +145,7 @@ __declspec(dllexport) void init_hook_handlers() {
 	lobby_info = new LobbyInfo();
 	player_info_updater = new PlayerInfoUpdater(lobby_info);
 }
+
+#ifdef __cplusplus
+}
+#endif 

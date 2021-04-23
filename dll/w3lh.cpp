@@ -34,6 +34,10 @@
 #include "dep.h"
 #include "game/hooks.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //#define DEBUG /* undef to disable logging */
 #define LATENCY_FILE "latency.txt"
 #define GAME_DLL_NAME "Game.dll"
@@ -349,3 +353,7 @@ DLLEXPORT __declspec( naked ) int GameMain(HMODULE hw3lhBase) {
 		retn 4
 	}
 }
+
+#ifdef __cplusplus
+}
+#endif 

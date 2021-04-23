@@ -1,6 +1,10 @@
 #include "hooks.h"
 #include "player-slot-helpers.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // PlayerName
 LPVOID getPlayerNameTextFrame(struct PlayerSlot* slot) {
 	return slot->playerName->comboBox->firstTextFrame;
@@ -52,3 +56,7 @@ void initPlayerHandicapFont(struct PlayerSlot* slot, const char* fontPath, float
 void setHandicapText(struct PlayerSlot* slot, const char* text) {
 	textFrameSetText(getPlayerHandicapTextFrame(slot), text);
 }
+
+#ifdef __cplusplus
+}
+#endif 

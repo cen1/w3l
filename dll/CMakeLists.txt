@@ -12,8 +12,8 @@ target_sources(w3lh PUBLIC
     dep.h
     functions.cpp
     functions.h
-    http.h
-    http.cpp
+    config.h
+    config.cpp
     nodefaultlib.cpp
     nodefaultlib.h 
     patches.h 
@@ -22,6 +22,8 @@ target_sources(w3lh PUBLIC
     safe-queue.hpp
     w3lh.cpp
     w3lh.h
+    INIReader.h
+    w3l.ini
     
     game/globals.h
     game/hooks.cpp

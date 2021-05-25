@@ -7,6 +7,8 @@
 #include <nlohmann/json.hpp>
 #include "LobbyInfo.h"
 #include "PlayerInfo/PlayerInfo.h"
+#include <vector>
+#include "../config.h"
 
 using json = nlohmann::json;
 
@@ -85,23 +87,39 @@ class PlayerInfoUpdater {
 			json player_info_mapped;
 			bool should_reschedule = false;
 			if (this->lobbyInfo->getMapType() == LobbyInfo::MAP_TYPE_DOTA) {
+				//debug("Dota map detected\r\n");
+				
 				if (this->lobbyInfo->getHostType() == LobbyInfo::HOST_TYPE_LAGABUSE) {
-					std::string querystring = "/new/api/la/stats?";
+					//debug("LA bot detected\r\n");
+
+					std::string querystring = Config::lobbyOverlayApiPath+"?";
 					for (std::vector<std::string>::iterator it = nicknames.begin(); it != nicknames.end(); ++it) {
 						// @todo urlencode
 						querystring += "players[]=" + *it + "&";
 					}
 
-					httplib::SSLClient cli("eurobattle.net");
+					httplib::SSLClient cli(Config::lobbyOverlayApiHost);
 					cli.set_follow_location(true);
 					auto res = cli.Get(querystring.c_str());
+
+					debug((char*)querystring.c_str());
+					debug("\r\n");
 					if (res) {
 						auto player_info_list = json::parse(res->body);
 						for (json::iterator it = player_info_list.begin(); it != player_info_list.end(); ++it) {
 							std::string nickname = (*it)["name"];
 							player_info_mapped[nickname] = *it;
 						}
-					} else {
+					} 
+					else {
+						debug("Failed to get stats for player\r\n");
+						auto err = res.error();
+						switch (err) {
+						case httplib::Error::SSLConnection:   debug("SSLConnection");
+							case httplib::Error::SSLLoadingCerts:   debug("SSLLoadingCerts");
+							case httplib::Error::SSLServerVerification: debug("SSLServerVerification");
+							default:      debug("Unknown");
+						}
 						should_reschedule = true;
 					}
 					

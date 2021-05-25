@@ -33,6 +33,10 @@
 #include "patches.h"
 #include "dep.h"
 #include "game/hooks.h"
+#include "INIReader.h"
+#include "config.h"
+#include <sstream>
+#include <vector>
 
 #ifdef __cplusplus
 extern "C" {
@@ -299,13 +303,57 @@ int patch() {
 	else if(rval == ERR_MEM_WRITE)
 		MessageBox(NULL, MEMORY_WRITE_ERROR, "Patch Error (w3lh.dll)", MB_OK);
 
-	rval = enhancement_patch((char *)game_dll_base);
-	if (rval != 0) {
-		MessageBox(NULL, MEMORY_WRITE_ERROR, "Patch Error (game state hooks, w3lh.dll)", MB_OK);
+	//Game lobby overlay patches
+	INIReader config("w3l.ini");
+	if (config.ParseError() != 0) {
+		debug("Can't load w3l.ini\r\n");
+		return rval;
 	}
 
-	return rval;
+	bool lobbyOverlayEnabled = config.GetBoolean("DOTA", "lobby_overlay_enabled", false);
+	std::string lobbyOverlayBotNameCs = config.Get("DOTA", "lobby_overlay_bot_names", "lagabuse.com.20");
+	std::string lobbyOverlayApiUrl = config.Get("DOTA", "lobby_overlay_api_url", "eurobattle.net/new/api/la/stats");
+	std::string botNameBuf;                 
+	std::stringstream botNameSs(lobbyOverlayBotNameCs);
 
+	debug((char*)lobbyOverlayApiUrl.c_str());
+	debug("\r\n");
+
+	size_t pathStart = lobbyOverlayApiUrl.find_first_of("/");
+	std::string lobbyOverlayApiHost = lobbyOverlayApiUrl.substr(0, pathStart);
+	std::string lobbyOverlayApiPath = lobbyOverlayApiUrl.substr(pathStart);
+	debug((char*)lobbyOverlayApiHost.c_str());
+	debug("\r\n");
+	debug((char*)lobbyOverlayApiPath.c_str());
+	debug("\r\n");
+
+	std::vector<std::string> botNames;
+
+	while (getline(botNameSs, botNameBuf, ',')) {
+		botNames.push_back(botNameBuf);
+		debug((char *)botNameBuf.c_str());
+		debug(",");
+	}
+	debug("\r\n");
+
+	if (lobbyOverlayEnabled) {
+		debug("Lobby overlay is enabled, adding enhanced patches\r\n");
+
+		Config::lobbyOverlayEnabled = lobbyOverlayEnabled;
+		Config::lobbyOverlayApiHost = lobbyOverlayApiHost;
+		Config::lobbyOverlayApiPath = lobbyOverlayApiPath;
+		Config::lobbyOverlayBotNames = botNames;
+
+		rval = enhancement_patch((char*)game_dll_base);
+		if (rval != 0) {
+			MessageBox(NULL, MEMORY_WRITE_ERROR, "Patch Error (lobby overlay hooks, w3lh.dll)", MB_OK);
+		}
+	}
+	else {
+		debug("Lobby overlay is disabled\r\n");
+	}
+	
+	return rval;
 }
 
 /* DLL entry point - called when war3.exe calls LoadLibrary. 

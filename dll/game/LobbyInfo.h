@@ -8,6 +8,7 @@
 #include "PlayerInfo/LagabuseDotaPlayerInfo.h"
 #include "globals.h"
 #include "../debug.h"
+#include "../config.h"
 
 std::string strtolower(std::string str) {
 	std::string result;
@@ -53,14 +54,9 @@ class LobbyInfo {
 		}
 
 		int detectHostTypeByName(std::string host_name) {
-			if (host_name.find("lagabuse.com.") != std::string::npos) {
-				// @todo remove true
+			if (std::find(Config::lobbyOverlayBotNames.begin(), Config::lobbyOverlayBotNames.end(), host_name) != Config::lobbyOverlayBotNames.end()) {
 				return LobbyInfo::HOST_TYPE_LAGABUSE;
 			}
-			//if (host_name.find("some_safelist_creator_name") != std::string::npos) {
-			// @todo safelist support
-			// return LobbyInfo::HOST_TYPE_SAFELIST;
-			//}
 			return LobbyInfo::HOST_TYPE_UNKNOWN;
 		}
 

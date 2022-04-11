@@ -26,6 +26,30 @@ class PlayerInfoUpdater {
 		mutable std::mutex workerIterationMutex;
 		std::atomic<bool> stopWorkerFlag{ false };
 
+		unsigned char to_hex(unsigned char x) {
+			return x + (x > 9 ? ('A' - 10) : '0');
+		}
+
+		const std::string urlencode(const std::string& s) {
+			std::ostringstream os;
+
+			for (std::string::const_iterator ci = s.begin(); ci != s.end(); ++ci) {
+				if ((*ci >= 'a' && *ci <= 'z') ||
+					(*ci >= 'A' && *ci <= 'Z') ||
+					(*ci >= '0' && *ci <= '9')) { // allowed
+					os << *ci;
+				}
+				else if (*ci == ' ') {
+					os << '+';
+				}
+				else {
+					os << '%' << to_hex(*ci >> 4) << to_hex(*ci % 16);
+				}
+			}
+
+			return os.str();
+		}
+
 	public:
 		const int WORKER_SLEEP_TIME = 150;
 		
@@ -94,8 +118,7 @@ class PlayerInfoUpdater {
 
 					std::string querystring = Config::lobbyOverlayApiPath+"?";
 					for (std::vector<std::string>::iterator it = nicknames.begin(); it != nicknames.end(); ++it) {
-						// @todo urlencode
-						querystring += "players[]=" + *it + "&";
+						querystring += "players[]=" + urlencode(*it) + "&";
 					}
 
 					httplib::SSLClient cli(Config::lobbyOverlayApiHost);

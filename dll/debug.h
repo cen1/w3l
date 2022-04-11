@@ -3,7 +3,7 @@
 	extern "C" {
 #endif
 
-void debug(char* message, ...);
+int debug(char* message, ...);
 
 #ifdef __cplusplus
 	}

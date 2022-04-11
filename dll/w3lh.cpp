@@ -38,6 +38,8 @@
 #include <sstream>
 #include <vector>
 
+#pragma comment(lib, "mincore_downlevel.lib")   // Support OS older than SDK
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -361,6 +363,13 @@ int patch() {
    Also called when war3.exe calls FreeLibrary. Intercepts the war3.exe FreeLibrary 
    call and frees the real "Game.dll" */
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
+
+	/*int logRet = debug("W3LH Start.\r\n");
+	if (logRet < 0) {
+		MessageBox(NULL, "Could not open debug.log file. Is W3 folder read-only? AV block?", "Log error", MB_OK);
+		return FALSE;
+	}*/
+
 	if(fdwReason == DLL_PROCESS_DETACH && called == 1 && game_dll_base) { /* FreeLibrary called */
 		called = 2; /* prevent multiple FreeLibrary calls */
 		return FreeLibrary(game_dll_base);
@@ -370,7 +379,6 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
 		return TRUE;
 	called = 1;
 
-	debug("Start.\r\n");
 	if(patch() == SUCCESS) {
         debug("Patches successful.\r\n");
         if ( SetCurrentProcessDEP( DEP_DISABLED)) 

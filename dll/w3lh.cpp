@@ -332,7 +332,13 @@ int patch() {
 	std::vector<std::string> botNames;
 
 	while (getline(botNameSs, botNameBuf, ',')) {
-		botNames.push_back(botNameBuf);
+
+		size_t start = botNameBuf.find_first_not_of(" ");
+		size_t end = botNameBuf.find_last_not_of(" ");
+
+		if (start != std::string::npos && end != std::string::npos) {
+			botNames.push_back(botNameBuf.substr(start, end - start + 1));
+		}
 		debug((char *)botNameBuf.c_str());
 		debug(",");
 	}

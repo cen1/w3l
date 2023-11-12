@@ -111,10 +111,10 @@ class PlayerInfoUpdater {
 			json player_info_mapped;
 			bool should_reschedule = false;
 			if (this->lobbyInfo->getMapType() == LobbyInfo::MAP_TYPE_DOTA) {
-				//debug("Dota map detected\r\n");
+				debug("Dota map detected\r\n");
 				
 				if (this->lobbyInfo->getHostType() == LobbyInfo::HOST_TYPE_LAGABUSE) {
-					//debug("LA bot detected\r\n");
+					debug("LA bot detected\r\n");
 
 					std::string querystring = Config::lobbyOverlayApiPath+"?";
 					for (std::vector<std::string>::iterator it = nicknames.begin(); it != nicknames.end(); ++it) {

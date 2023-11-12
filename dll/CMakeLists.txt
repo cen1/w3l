@@ -40,15 +40,14 @@ target_sources(w3lh PUBLIC
     game/PlayerInfo/DefaultPlayerInfo.h
     game/PlayerInfo/LagabuseDotaPlayerInfo.h
     game/PlayerInfo/PlayerInfo.h
-    )
+)
 
 
 find_package(httplib REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(openssl REQUIRED)
 
-target_include_directories(w3lh PRIVATE httplib::httplib nlohmann_json::nlohmann_json)
-
-target_link_libraries(w3lh PRIVATE httplib::httplib nlohmann_json::nlohmann_json)
+target_link_libraries(w3lh PRIVATE httplib::httplib nlohmann_json::nlohmann_json openssl::openssl)
 
 if(MSVC)
 
@@ -59,6 +58,11 @@ if(MSVC)
         -DW3LH_EXPORTS
         -DUNICODE
         -D_UNICODE)
+
+    if (_DEBUG_LOG)
+        target_compile_definitions(w3lh PRIVATE 
+        -D_DEBUG_LOG)
+    endif()
 
     set_target_properties(w3lh PROPERTIES LINK_FLAGS "/MANIFESTUAC:\"level='asInvoker' uiAccess='false'\"")
 

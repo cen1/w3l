@@ -106,8 +106,16 @@ class LobbyInfo {
 		}
 
 		void registerSlot(struct PlayerSlot* slot) {
+			if (!slot) {
+				debug("registerSlot: slot is NULL\r\n");
+				return;
+			}
 			std::lock_guard<std::mutex> l(player_slot_mutex);
 			int slot_number = slot->slotNumber;
+			if (slot_number < 0 || slot_number >= MAX_SLOT_NUMBERS) {
+				debug((char*)("registerSlot: invalid slot_number " + std::to_string(slot_number) + "\r\n").c_str());
+				return;
+			}
 			if (playerSlots[slot_number] == slot) {
 				return;
 			}
@@ -131,17 +139,28 @@ class LobbyInfo {
 
 		struct PlayerSlot* getPlayerSlot(int slot_number) {
 			std::lock_guard<std::mutex> l(player_slot_mutex);
+			if (slot_number < 0 || slot_number >= MAX_SLOT_NUMBERS) {
+				debug((char*)("getPlayerSlot: invalid slot_number " + std::to_string(slot_number) + "\r\n").c_str());
+				return NULL;
+			}
 			return this->playerSlots[slot_number];
 		}
 
 		std::string getSlotNickname(int slot_number) {
-			// @todo invalid argument exception
 			std::lock_guard<std::mutex> l(player_slot_mutex);
+			if (slot_number < 0 || slot_number >= MAX_SLOT_NUMBERS) {
+				debug((char*)("getSlotNickname: invalid slot_number " + std::to_string(slot_number) + "\r\n").c_str());
+				return "";
+			}
 			return this->slotNicknames[slot_number];
 		}
 
 		void setSlotNickname(int slot_number, std::string nickname) {
 			std::lock_guard<std::mutex> l(player_slot_mutex);
+			if (slot_number < 0 || slot_number >= MAX_SLOT_NUMBERS) {
+				debug((char*)("setSlotNickname: invalid slot_number " + std::to_string(slot_number) + "\r\n").c_str());
+				return;
+			}
 			this->slotNicknames[slot_number] = nickname;
 		}
 

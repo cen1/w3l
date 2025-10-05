@@ -7,6 +7,9 @@ extern "C" {
 
 // PlayerName
 LPVOID getPlayerNameTextFrame(struct PlayerSlot* slot) {
+	if (!slot || !slot->playerName || !slot->playerName->comboBox) {
+		return NULL;
+	}
 	return slot->playerName->comboBox->firstTextFrame;
 }
 
@@ -15,11 +18,17 @@ void initPlayerNameFont(struct PlayerSlot* slot, const char* fontPath, float fon
 }
 
 void setPlayerNameText(struct PlayerSlot* slot, const char* text) {
-	textFrameSetText(getPlayerNameTextFrame(slot), text);
+	LPVOID textFrame = getPlayerNameTextFrame(slot);
+	if (textFrame) {
+		textFrameSetText(textFrame, text);
+	}
 }
 
 // PlayerRace
 LPVOID getPlayerRaceTextFrame(struct PlayerSlot* slot) {
+	if (!slot || !slot->playerRace || !slot->playerRace->comboBox) {
+		return NULL;
+	}
 	return slot->playerRace->comboBox->firstTextFrame;
 }
 
@@ -28,11 +37,17 @@ void initPlayerRaceFont(struct PlayerSlot* slot, const char* fontPath, float fon
 }
 
 void setPlayerRaceText(struct PlayerSlot* slot, const char* text) {
-	textFrameSetText(getPlayerRaceTextFrame(slot), text);
+	LPVOID textFrame = getPlayerRaceTextFrame(slot);
+	if (textFrame) {
+		textFrameSetText(textFrame, text);
+	}
 }
 
 // PlayerTeam
 LPVOID getPlayerTeamTextFrame(struct PlayerSlot* slot) {
+	if (!slot || !slot->teamButtonTitle) {
+		return NULL;
+	}
 	return slot->teamButtonTitle;
 }
 
@@ -41,11 +56,17 @@ void initPlayerTeamFont(struct PlayerSlot* slot, const char* fontPath, float fon
 }
 
 void setPlayerTeamText(struct PlayerSlot* slot, const char* text) {
-	textFrameSetText(getPlayerTeamTextFrame(slot), text);
+	LPVOID textFrame = getPlayerTeamTextFrame(slot);
+	if (textFrame) {
+		textFrameSetText(textFrame, text);
+	}
 }
 
 // PlayerHandicap
 LPVOID getPlayerHandicapTextFrame(struct PlayerSlot* slot) {
+	if (!slot || !slot->playerHandicap || !slot->playerHandicap->comboBox) {
+		return NULL;
+	}
 	return slot->playerHandicap->comboBox->firstTextFrame;
 }
 
@@ -54,7 +75,10 @@ void initPlayerHandicapFont(struct PlayerSlot* slot, const char* fontPath, float
 }
 
 void setHandicapText(struct PlayerSlot* slot, const char* text) {
-	textFrameSetText(getPlayerHandicapTextFrame(slot), text);
+	LPVOID textFrame = getPlayerHandicapTextFrame(slot);
+	if (textFrame) {
+		textFrameSetText(textFrame, text);
+	}
 }
 
 #ifdef __cplusplus

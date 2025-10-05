@@ -108,6 +108,9 @@ __declspec(dllexport) void __stdcall onAfterSlotInit(struct PlayerSlot* slot) {
 }
 
 __declspec(dllexport) void __stdcall onSlotChange(struct PlayerSlot* slot, char* nickname) {
+	if (!slot) {
+		return;
+	}
 	std::string str_nickname;
 	if (nickname) {
 		str_nickname = nickname;
@@ -136,9 +139,14 @@ __declspec(dllexport) int __stdcall isDefaultUpdatingTeamTextDisabled() {
 }
 
 __declspec(dllexport) void __stdcall afterSlotTextsUpdate(struct PlayerSlot* slot) {
+	if (!slot) {
+		return;
+	}
 	int slotNumber = slot->slotNumber;
 	std::string nickname = lobby_info->getSlotNickname(slotNumber);
-	lobby_info->getPlayerInfo(nickname)->applyToPlayerSlot(slot);
+	if (!nickname.empty()) {
+		lobby_info->getPlayerInfo(nickname)->applyToPlayerSlot(slot);
+	}
 }
 
 __declspec(dllexport) void init_hook_handlers() {

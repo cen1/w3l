@@ -128,10 +128,17 @@ class PlayerInfoUpdater {
 					debug((char*)querystring.c_str());
 					debug("\r\n");
 					if (res) {
-						auto player_info_list = json::parse(res->body);
-						for (json::iterator it = player_info_list.begin(); it != player_info_list.end(); ++it) {
-							std::string nickname = (*it)["name"];
-							player_info_mapped[nickname] = *it;
+						try {
+							auto player_info_list = json::parse(res->body);
+							for (json::iterator it = player_info_list.begin(); it != player_info_list.end(); ++it) {
+								std::string nickname = (*it).value("name", "");
+								if (!nickname.empty()) {
+									player_info_mapped[nickname] = *it;
+								}
+							}
+						} catch (const nlohmann::json::exception& e) {
+							debug((char*)("JSON parse error in fetchPlayersInfo: " + std::string(e.what()) + "\r\n").c_str());
+							should_reschedule = true;
 						}
 					} 
 					else {

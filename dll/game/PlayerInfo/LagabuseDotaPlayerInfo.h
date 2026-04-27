@@ -14,11 +14,20 @@ class LagabuseDotaPlayerInfo : public PlayerInfo {
 		LagabuseDotaPlayerInfo& operator=(LagabuseDotaPlayerInfo const&) = delete; // disable copy-assignment constructor
 
 		virtual void applyJsonData(nlohmann::basic_json<std::map> json) override {
-			this->rating = json["rating"];
-			this->wins = json["wins"];
-			this->loses = json["loses"];
-			this->gamesCount = this->wins + this->loses;
-			this->rank = json["rank"];
+			try {
+				this->rating = json.value("rating", 0UL);
+				this->wins = json.value("wins", 0UL);
+				this->loses = json.value("loses", 0UL);
+				this->gamesCount = this->wins + this->loses;
+				this->rank = json.value("rank", 0UL);
+			} catch (const nlohmann::json::exception& e) {
+				debug((char*)("JSON parse error in applyJsonData: " + std::string(e.what()) + "\r\n").c_str());
+				this->rating = 0;
+				this->wins = 0;
+				this->loses = 0;
+				this->gamesCount = 0;
+				this->rank = 0;
+			}
 		}
 
 		virtual std::string compileNameString() override {
